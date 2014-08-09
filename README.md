@@ -5,7 +5,9 @@ This project is a jstree demo written with django server
 ## Dependencies
 
 > Python 2.7
+
 > Django 1.6.3
+
 > Jinja2 2.7.2
 
 # Deploy
