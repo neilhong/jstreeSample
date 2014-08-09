@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <title>jstree test case</title>
+        <script src="{{STATIC_URL}}js/jquery.js"></script>
+        <script src="{{STATIC_URL}}js/jstree.min.js"></script>
+        <link rel="stylesheet" href="{{STATIC_URL}}css/style.min.css" />        
+    </head>
+    
+    <body>
+        <div class="jstree-div">
+            <a style="margin:5px;cursor:pointer;" href="#" id="refresh_tree" title="refresh tree">refresh</a>
+            <div id="jstree-view"></div>
+        </div>
+    </body>
+
+    <script>
+        $('#jstree-view').jstree({
+            "core" : {
+                'data' : {
+                    'url' : '/editor/list/',
+                    'data' : function(node) {
+                        return {'id' : node.id};
+                    },
+                    'dataType' : 'json',
+                    'contentType': 'application/json charset=utf-8',
+                },
+                "multiple": false,
+                "check_callback": function(o, n, p, i, m) {
+                    if(m && m.dnd && m.pos !== 'i') {return false;}
+                    if(o === 'move_node' || o === 'copy_node') {
+                        var node = this.get_node(n);
+                        if(node.parent === this.get_node(p).id){
+                            return false;
+                        }
+
+                        if(m.ref) {
+                            var is_file_tested = m.ref.type === 'file';
+                            if(is_file_tested) {return false;}
+                            var ref_children = m.ref.children;
+                            var node_type = node.type === 'file';
+                            for(var i=0; i<ref_children.length; i++) {
+                                var cur_child_node = this.get_node(ref_children[i]);
+                                var cur_child_type = cur_child_node.type === 'file';
+                                if(cur_child_type !== node_type) {continue;}
+
+                                if(node.text === cur_child_node.text) {return false;}
+                            }
+                        }
+                    }
+                    return true;
+                },
+            },
+            'sort' : function(a, b) {
+                return this.get_type(a) === this.get_type(b) ? (
+                    this.get_text(a) > this.get_text(b) ? 1 : -1) : (
+                    this.get_type(a) >= this.get_type(b) ? 1 : -1);
+            },
+            'state' : {
+                "key" : 'directory',
+                "filter" : function(k) {
+                    delete k.core.selected;
+                    return k;
+                }
+            },
+            'plugins' : ['state', 'dnd', 'sort', 'types']
+        })
+        .on('before_open.jstree', function(e, data) {
+        })
+        .on('after_open.jstree', function(e, data) {
+        })
+        .on('ready.jstree', function(e, data) {
+        })
+        .on('select_node.jstree', function(e, data) {
+        })
+        .on('move_node.jstree', function(e, data) {
+        })
+        .on('copy_node.jstree', function(e, data) {
+        });
+        
+        var jstree_obj = $("#jstree-view").jstree(true);
+        $("#refresh_tree").click(function(e) {
+            jstree_obj.refresh();
+        });
+    </script>
+</html>
