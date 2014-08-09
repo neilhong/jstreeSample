@@ -10,7 +10,7 @@ This project is a jstree demo written with django server
 
 > Jinja2 2.7.2
 
-# Deploy
+## Deploy
 
 1. install python/django/jinja2
 2. cd jstreeSample/
